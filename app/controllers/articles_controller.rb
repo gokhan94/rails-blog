@@ -1,7 +1,16 @@
 class ArticlesController < ApplicationController
+	
+	## Tüm Article Listeler
+	def index
+		@articles = Article.all
+	end	
+	## Form_for ile oluşturulan foruma yeni bir article nesnesi oluşturmasını sağladık
 	def new
-		##  new.html.erb - form_for ile oluşturulan foruma gönderdik
 		@article = Article.new
+	end	
+
+	def edit
+		@article = Article.find(params[:id])
 	end	
 
 	def create
@@ -16,6 +25,17 @@ class ArticlesController < ApplicationController
 		end
 		
 	end	
+
+	def update
+		@article = Article.find(params[:id])
+		if @article.update(article_params)
+			flash[:notice] = "Article successfuly updated"
+			redirect_to article_path(@article)
+		else	
+			render :edit
+		end
+	end	
+
 
 	def show
 		@article = Article.find(params[:id])
