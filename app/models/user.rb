@@ -3,7 +3,7 @@ class User < ApplicationRecord
 	has_many :articles
 	before_save { self.email = email.downcase }
 
-	has_secure_password   
+	#has_secure_password   
 
 	validates :username,  
 			  presence: true,  

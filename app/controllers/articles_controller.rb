@@ -4,7 +4,7 @@ class ArticlesController < ApplicationController
 
 	## Tüm Article Listeler
 	def index
-		@articles = Article.all
+		@articles = Article.paginate(page: params[:page], per_page: 3)
 	end	
 	## Form_for ile oluşturulan foruma yeni bir article nesnesi oluşturmasını sağladık
 	def new
