@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
 
 	before_action :set_user,          only: [:edit, :update, :show]
-	before_action :require_same_user, only: [:edit, :update]
+	before_action :require_same_user, only: [:edit, :update, :destroy]
+	before_action :require_admin,     only: [:destroy]
 
 	def index
 		@users = User.paginate(page: params[:page], per_page: 6)
@@ -14,8 +15,9 @@ class UsersController < ApplicationController
 	def create
 		@user = User.new(user_params)
 		if @user.save
+			session[:user_id] = @user.id
 			flash[:success] = "Başarıyla kayıt edildi, Hoşgeldin #{@user.username}"
-			redirect_to articles_path
+			redirect_to user_path(@user)
 		else	
 			render :new
 		end
@@ -38,7 +40,10 @@ class UsersController < ApplicationController
     end	
 
     def destroy
-
+ 		@user = User.find(params[:id])
+ 		@user.destroy
+ 		flash[:danger] = "Başarıyla  Silindi"
+ 		redirect_to users_path
     end		
 
 	private
@@ -52,10 +57,18 @@ class UsersController < ApplicationController
 	end	
 
 	def require_same_user
-   	## Oturum açan kişi ile makale açan kişi aynımı
-   	if logged_in? && current_user != @user
+   	## Makale açan kişi oturum açan kişi ile aynı değilse uyarı verilsin
+   	## Kullanıcı admin yetkisine sahip değilse :edit, :update, :destroy metotlarına erişemesin
+   	if current_user != @user && !current_user.admin?
 	    flash[:danger] = "bu eylemi gerçekleştirme yetkisine sahip değilsin"
   		redirect_to root_path   		
+   	end
+   end	
+
+   def require_admin
+   	if logged_in? && !current_user.admin?
+   	    flash[:danger] = "admin yetkisine sahip değilsin"
+  		redirect_to root_path  		
    	end
    end	
 

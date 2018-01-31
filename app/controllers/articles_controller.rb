@@ -55,12 +55,13 @@ class ArticlesController < ApplicationController
 	end	
 
 	def article_params
-		params.require(:article).permit(:title, :description)
+		params.require(:article).permit(:title, :description, category_ids: [])
 	end	
 
    def require_same_user
    	## Oturum açan kişi ile makale açan kişi aynımı
-   	if current_user != @article.user
+   	## Kullanıcı admin yetkisine sahip değilse, :edit, :update, :destroy metotlarına erişemesin
+   	if current_user != @article.user && !current_user.admin?
 	    flash[:danger] = "bu eylemi gerçekleştirme yetkisine sahip değilsin"
   		redirect_to root_path   		
    	end

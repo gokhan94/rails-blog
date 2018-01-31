@@ -11,7 +11,11 @@
           <small><%= link_to article.user.username, article_path(article) if article.user %></small> tarafından
           <%= time_ago_in_words(article.created_at)%> önce oluşturuldu
 
-          <% if logged_in? && current_user == article.user %>
+          <% if article.categories.any? %>
+            <p>Category: <%= render article.categories %></p>
+          <% end %>
+  
+          <% if logged_in? && (current_user == article.user || current_user.admin? ) %>
        		<div class="article-actions">
                   <%= link_to "Edit this article", edit_article_path(article), class: "btn btn-xs btn-primary" %> 
                   <%= link_to "Delete this article", article_path(article), method: :delete, 

@@ -1,0 +1,17 @@
+<div class="alert alert-info" role="alert"> 
+	<div align="center">
+		<strong>TÜM KATEGORİLER</strong> 
+	</div>
+</div>
+
+<% @category.each do |categories| %>
+<ul class="list-group">
+  <li class="list-group-item">
+    <span class="badge"><%= pluralize(categories.articles.count, "Makale") %></span> 
+    <%= link_to "#{categories.name}", category_path(categories) %>
+  </li>
+</ul>
+<% end %>
+
+<%= will_paginate @category %>
+
